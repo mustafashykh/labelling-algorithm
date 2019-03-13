@@ -74,16 +74,12 @@ namespace S1
             {
                 for(int y = 0; y < temp.Height; y++)
                 {
-                    if(temp.GetPixel(x,y).B == 1 ) 
+                    if(temp.GetPixel(x,y).B == 1  || temp.GetPixel(x, y).B < 255) 
                     {
                         
                         temp.SetPixel(x, y, Color.Blue);
                     }
-                    if (temp.GetPixel(x, y).B == 2 )
-                    {
-
-                        temp.SetPixel(x, y, Color.Green);
-                    }
+                    
                 }
             }
 
