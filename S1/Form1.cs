@@ -55,7 +55,7 @@ namespace S1
                         if(upper[i,j] == 0 && left[i,j] == 0)
                         {
                             label[i, j] = index;
-                            index++;
+                            //index++;
                         }else if (upper[i, j] == 0 && left[i, j] != 0 || upper[i, j] != 0 && left[i, j] == 0)
                         {
                             if(upper[i,j] != 0)
