@@ -36,6 +36,7 @@ namespace S1
         {
             
             Bitmap bmp = new Bitmap(pictureBox1.Image);
+            bmp = greyScale();
             int[,] label = new int[bmp.Height, bmp.Width];
             int[,] upper = new int[bmp.Height, bmp.Width];
             int[,] left = new int[bmp.Height, bmp.Width];
@@ -84,7 +85,7 @@ namespace S1
 
                                 temp = search(upper[i, j]);
                                 //bool overwritten = deepSearch(upper[i,j]); 
-                                if (temp == null )
+                                if (temp == null)
                                 {
                                     temp = new obj();
                                     temp.id = upper[i, j];
@@ -98,14 +99,14 @@ namespace S1
                                         temp.list.Add(left[i, j]);
                                     }
                                 }       
-                            } else
+                            } else if (upper[i, j] > left[i, j])
                             {
                                 label[i, j] = left[i, j];
 
                                 temp = search(left[i, j]);
                                 //bool overwritten = deepSearch(left[i, j]);
                             
-                                if (temp == null )
+                                if (temp == null)
                                 {
                                     temp = new obj();
                                     temp.id = left[i, j];
@@ -125,7 +126,8 @@ namespace S1
                 }
             }
 
-            Console.WriteLine(rememberList.Count);
+            //Console.WriteLine(rememberList.Count);
+
 
             for (int i = rememberList.Count-1 ; i >= 0; i--)
             {
@@ -133,7 +135,8 @@ namespace S1
                 label = indexHandeler(rememberList[i].id, rememberList[i].list, label, bmp.Height, bmp.Width);
             }
 
-            //int numberOfColors = 
+            
+
             IEnumerable<int> max = label.Cast<int>().Distinct();
 
             Console.WriteLine("Number of Objects:\t "+(max.Count()-1));
@@ -141,11 +144,10 @@ namespace S1
             int c = label.Cast<int>().Max();
 
             Color[] ColorList = new Color[c];
-
             Random rand = new Random();
             for(int i = 0; i < c-1; i++)
             {
-                ColorList[i] = Color.FromArgb(rand.Next(0,256), rand.Next(0, 256), rand.Next(0, 256));
+                ColorList[i] = Color.FromArgb(rand.Next(0,255), rand.Next(0, 255), rand.Next(0, 255));
             }
 
             
@@ -168,16 +170,40 @@ namespace S1
 
 
         //helper Method
-        private bool deepSearch(int num)
+        private Bitmap greyScale()
         {
-            for(int x = 0; x < rememberList.Count-1; x++)
+            Bitmap temp = new Bitmap(pictureBox1.Image);
+            for (int w = 0; w < temp.Width; w++)
             {
-                if (rememberList[x].list.Contains(num))
+                for (int h = 0; h < temp.Height; h++)
                 {
-                    return true;
+                    int total;
+                    int red = temp.GetPixel(w, h).R;
+                    int green = temp.GetPixel(w, h).G;
+                    int blue = temp.GetPixel(w, h).B;
+
+                    total = (red + green + blue) / 3;
+
+                    temp.SetPixel(w, h, Color.FromArgb(total, total, total));
                 }
             }
-            return false;
+
+            for (int w = 0; w < temp.Width; w++)
+            {
+                for (int h = 0; h < temp.Height; h++)
+                {
+                    if (temp.GetPixel(w, h) == Color.Black || temp.GetPixel(w, h).R < 150)
+                    {
+                        temp.SetPixel(w, h, Color.Black);
+                    }
+                    else
+                    {
+                        temp.SetPixel(w, h, Color.White);
+                    }
+                }
+            }
+
+            return temp;
         }
         private int[,] indexHandeler(int num,List<int> list, int[,] arr, int height, int width)
         {
