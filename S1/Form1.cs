@@ -13,6 +13,7 @@ namespace S1
     public partial class Form1 : Form
     {
         List<obj> rememberList = new List<obj>();
+        
 
 
         public Form1()
@@ -36,10 +37,13 @@ namespace S1
         {
             
             Bitmap bmp = new Bitmap(pictureBox1.Image);
-            bmp = greyScale();
+            //bmp = greyScale();
             int[,] label = new int[bmp.Height, bmp.Width];
             int[,] upper = new int[bmp.Height, bmp.Width];
             int[,] left = new int[bmp.Height, bmp.Width];
+            
+
+
             this.rememberList = new List<obj>();
             obj temp;
             
@@ -54,7 +58,9 @@ namespace S1
                     if (bmp.GetPixel(j, i) == Color.Black || bmp.GetPixel(j, i).R < 10)
                     {
                         upper[i, j] = label[i - 1, j];
-                        left[i, j]= label[i, j - 1];
+                        left[i, j] = label[i, j - 1];
+                        
+
                         if(upper[i,j] == 0 && left[i,j] == 0)
                         {
                             label[i, j] = index;
@@ -66,16 +72,17 @@ namespace S1
                                 label[i, j] = upper[i, j];
                                 //Console.WriteLine("UHit");
                             }
-                            else
+                            else 
                             {
                                 label[i, j] = left[i, j];
                                 //Console.WriteLine("LHit");
                             }
+                            
                         }
                         else if(left[i,j] == upper[i, j] && left[i,j] != 0 && upper[i,j] != 0)
                         {
                             //Console.WriteLine("Same");
-                            label[i, j] = left[i, j];
+                            label[i, j] = upper[i, j];
                         }else if (left[i,j] != upper[i,j] && left[i, j] != 0 && upper[i, j] != 0)
                         {
                             
@@ -87,8 +94,9 @@ namespace S1
                                 //bool overwritten = deepSearch(upper[i,j]); 
                                 if (temp == null)
                                 {
-                                    temp = new obj();
-                                    temp.id = upper[i, j];
+                                    temp = new obj {
+                                        id = upper[i, j]
+                                    };
                                     temp.list.Add(left[i, j]);
                                     rememberList.Add(temp);
                                 }
@@ -102,44 +110,56 @@ namespace S1
                             } else if (upper[i, j] > left[i, j])
                             {
                                 label[i, j] = left[i, j];
-
+                                
                                 temp = search(left[i, j]);
                                 //bool overwritten = deepSearch(left[i, j]);
                             
                                 if (temp == null)
                                 {
-                                    temp = new obj();
-                                    temp.id = left[i, j];
+                                    temp = new obj
+                                    {
+                                        id = left[i, j]
+                                    };
                                     temp.list.Add(upper[i, j]);
                                     rememberList.Add(temp);
+                                    
+
                                 }
                                 else if(temp != null)
                                 {
                                     if (!(temp.list.Contains(upper[i,j])))
                                     {
+                                        
                                         temp.list.Add(upper[i,j]);
                                     }
                                 }
                             }
+                            
                         }
                     }
                 }
             }
 
             //Console.WriteLine(rememberList.Count);
+            this.rememberList = this.rememberList.OrderByDescending(x => x.id).ToList();
+            //Console.WriteLine(this.rememberList.Count);
 
-
-            for (int i = rememberList.Count-1 ; i >= 0; i--)
+            for (int i = 0 ; i < this.rememberList.Count ; i++)
             {
-                //Console.WriteLine(rememberList[0].id);
-                label = indexHandeler(rememberList[i].id, rememberList[i].list, label, bmp.Height, bmp.Width);
+                label = indexHandeler(this.rememberList[i].id, this.rememberList[i].list, label, bmp.Height, bmp.Width);
             }
+
+
+            //This is reponsibe for error correction
+            label = ErrorHandler(label,bmp.Height, bmp.Width);
 
             
 
             IEnumerable<int> max = label.Cast<int>().Distinct();
+            
 
-            Console.WriteLine("Number of Objects:\t "+(max.Count()-1));
+
+            //Console.WriteLine("Number of Objects:\t "+(max.Count()-1));
             label1.Text = "Objects ="+ (max.Count() - 1);
             int c = label.Cast<int>().Max();
 
@@ -162,10 +182,7 @@ namespace S1
                 }
             }
 
-
-            //Console.WriteLine("Number of detected objects:\t"+ColorList.Count());
             pictureBox1.Image = bmp;
-            
         }
 
 
@@ -208,13 +225,13 @@ namespace S1
         private int[,] indexHandeler(int num,List<int> list, int[,] arr, int height, int width)
         {
 
-            for(int i = 1; i < height-1; i++)
+            for(int i = 1; i < width; i++)
             {
-                for(int j = 1; j < width-1; j++)
+                for(int j = 1; j < height; j++)
                 {
-                    if (list.Contains(arr[i, j]))
+                    if (list.Contains(arr[j, i]))
                     {
-                        arr[i, j] = num;
+                        arr[j, i] = num;
                     }
                 }
             }
@@ -237,8 +254,94 @@ namespace S1
         }
 
 
+        private int[,] corrector(int[,] list, int err, int correct, int height, int width) {
+            for(int y = 1; y < height-1; y++)
+            {
+                for(int x = 1; x < width-1; x++)
+                {
+                    if(list[y,x] == err)
+                    {
+                        list[y, x] = correct;
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        private int[,] ErrorHandler(int[,] list,int height, int width)
+        {
+            
+            for(int x = 1; x < height-1; x++)
+            {
+                for(int y = 1; y < width-1 ; y++)
+                {
+
+                    //upper
+                    if (list[x, y] > list[x - 1, y] && list[x - 1, y] != 0 && list[x, y] != 0)
+                    {
+                        list = corrector(list, list[x, y], list[x - 1, y], height, width);
+                    }
+
+                    //upper-left
+                    if (list[x, y] > list[x - 1, y -1] && list[x - 1, y - 1] != 0 && list[x, y] != 0)
+                    {
+                        list = corrector(list, list[x, y], list[x - 1, y - 1], height, width);
+                    }
+
+                    //left
+                    if (list[x, y] > list[x, y - 1] && list[x, y - 1] != 0 && list[x, y] != 0)
+                    {
+                        list = corrector(list, list[x, y], list[x, y - 1], height, width);
+                    }
+
+                    //right
+                    if (list[x, y] > list[x, y+1] && list[x, y + 1] != 0 && list[x, y] != 0)
+                    {
+                        list = corrector(list, list[x, y], list[x, y + 1], height, width);
+                    }
+
+                    //left-bottom
+                    if (list[x, y] > list[x + 1, y - 1] && list[x + 1, y - 1] != 0 && list[x, y] != 0)
+                    {
+                        list = corrector(list, list[x, y], list[x + 1, y - 1], height, width);
+                    }
+
+                    //right-top
+                    if (list[x, y] > list[x - 1, y + 1] && list[x - 1, y + 1] != 0 && list[x, y] != 0)
+                    {
+                        list = corrector(list, list[x, y], list[x - 1, y + 1], height, width);
+                    }
+
+                    //bottom
+                    if (list[x, y] > list[x + 1, y] && list[x + 1, y] != 0 && list[x, y] != 0)
+                    {
+                        list = corrector(list, list[x, y], list[x + 1, y], height, width);
+                    }
+
+                    //right-bottom
+                    if (list[x, y] > list[x + 1, y + 1] && list[x + 1, y + 1] != 0 && list[x, y] != 0)
+                    {
+                        list = corrector(list, list[x, y], list[x + 1, y + 1], height, width);
+                    }
+
+                }
+            }
+
+            return list;
+        }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image = greyScale();
+        }
+
+        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/mustafasheikh1");
+        }    
     }
-    
+
     class obj
     {
         public  int id;
