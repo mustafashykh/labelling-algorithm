@@ -339,7 +339,12 @@ namespace S1
         private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/mustafasheikh1");
-        }    
+        }
+
+        private void LinkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/mustafasheikh1/labelling-algorithm");
+        }
     }
 
     class obj
