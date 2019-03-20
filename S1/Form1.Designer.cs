@@ -130,7 +130,7 @@
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Font = new System.Drawing.Font("Calibri", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel1.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel1.Location = new System.Drawing.Point(177, 19);
+            this.linkLabel1.Location = new System.Drawing.Point(176, 19);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(169, 29);
             this.linkLabel1.TabIndex = 7;
@@ -142,12 +142,12 @@
             // 
             this.linkLabel2.ActiveLinkColor = System.Drawing.Color.Black;
             this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkLabel2.Font = new System.Drawing.Font("Calibri", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel2.ForeColor = System.Drawing.Color.Black;
             this.linkLabel2.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel2.Location = new System.Drawing.Point(377, 22);
+            this.linkLabel2.Location = new System.Drawing.Point(367, 19);
             this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(188, 29);
+            this.linkLabel2.Size = new System.Drawing.Size(150, 29);
             this.linkLabel2.TabIndex = 9;
             this.linkLabel2.TabStop = true;
             this.linkLabel2.Text = "GITHUB REPO";
