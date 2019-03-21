@@ -199,13 +199,7 @@ namespace S1
                     total = (red + green + blue) / 3;
 
                     temp.SetPixel(w, h, Color.FromArgb(total, total, total));
-                }
-            }
 
-            for (int w = 0; w < temp.Width; w++)
-            {
-                for (int h = 0; h < temp.Height; h++)
-                {
                     if (temp.GetPixel(w, h) == Color.Black || temp.GetPixel(w, h).R < 150)
                     {
                         temp.SetPixel(w, h, Color.Black);
